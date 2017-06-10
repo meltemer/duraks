@@ -1,0 +1,195 @@
+# duraks
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1 , user-scaleable=no">
+<title>Başakşehir Otobüs Durakları</title>
+<style>
+ body { background-color: 	#FFFAFA ; }
+ 
+    #yazı
+  { position: absolute;
+	top:4px;
+	left:348px; 
+	line-height:16px;
+	border:black solid  2px;
+	padding:2px;
+	background-color: #D3D3D3;
+	font-family:Arial, Helvetica, sans-serif; 
+	font-size:15px;
+	font-weight:bold;}
+	
+	.butonum {
+    background-color:	#F8F8FF;
+    border: 1px solid ;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+	font-family:Arial, Helvetica, sans-serif; 
+    font-size: 13px;
+    margin: 2px 2px;
+    cursor: pointer;
+	border-radius: 2px;
+	
+	}
+  
+#listem
+{position: absolute;
+	top:25px;
+	left:530px;
+	line-height:20px;
+    border:black solid  2px;
+	padding:2px;
+	background-color: #D3D3D3;
+	font-family:Arial, Helvetica, sans-serif; 
+	font-size:15px;
+	font-weight:bold;}
+	
+	#tematik {
+	font-weight: bold;
+	font-family:Arial, Helvetica, sans-serif;
+	padding:4px;
+	font-size:15px;
+	border: 2px black solid ;
+	position: absolute;
+	top:30px;
+	left:50px;
+	}
+	
+#melDiv {
+    padding: 0;
+    margin: 0;
+    height: 80%;
+    width: 90%;
+	position: absolute;
+	top:100px;
+	left:50px;
+	}
+
+#buton3 { 
+    position: absolute;
+	top:70px;
+	left:50px; 
+	 }
+	 	 	 
+
+</style>
+<link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
+<script src="https://js.arcgis.com/4.3/"></script>
+
+<script type="text/javascript">
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/layers/TileLayer",
+  "esri/layers/FeatureLayer", 
+   "esri/tasks/QueryTask",
+  "esri/tasks/support/Query",
+  "esri/geometry/Extent",
+  "esri/geometry/Point",
+  "dojo/domReady!"], function(haritam,gorunum,katman,durakatman,sorgula,sorgum) {
+   var transportationLyr = new katman ({      
+   url: "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer" });
+	
+
+   var map = new haritam(
+ {  basemap:"satellite" });
+ 
+  var view = new gorunum({
+  map: map,
+  container: "melDiv" ,
+  zoom:14,
+  center:[28.7930,41.1078] 
+ });
+ 
+  var fl = new durakatman({
+  portalItem: { id: "b2c176787528437880797695ef8d4c70"} }); 
+  
+  map.add(fl);
+  
+  map.add(transportationLyr);
+  
+var saydam =document.getElementById("mk");
+saydam.onclick= function () {transportationLyr.opacity= document.getElementById("km").value;}
+
+
+  
+var bcd=document.getElementById("br");
+bcd.onclick= function() { transportationLyr.visible =0; }
+
+var abc=document.getElementById("bm");
+abc.onclick= function() { transportationLyr.visible =1; }
+
+var cde=document.getElementById("bd");
+cde.onclick= function() {
+view.goTo(fl.fullExtent);
+}
+
+var durakth = document.DurakAlani.elements[0].value;
+ 
+var queryTask  = new sorgula({
+ url:"https://services7.arcgis.com/wNYXScVQAVZqIBpy/ArcGIS/rest/services/bdurak/FeatureServer/0?token=WyPc-gtoB__igYkkrfuwdlXetvgmw27ZTWT7LrR9myNt8WG_B6KAh1j0CBJvfFkIF5We8Sb3YoVl8UriUdIf4Sly-2vzmeEerMQftG8ZbYzi1BZm1B8d6v5ns6O4OfvKwAXot8RAE7TK8tY752Zr5o-PEWaeO8OhCDftOry0Exz-XuORTwhKXXxswjBw_HZzHaecaV-uVPuaOZfvMLClNSFwcxxWwYfpj1Vsv5FBqs4."
+  });
+  
+
+var efg= document.getElementById("bc");
+
+efg.onclick=function () {
+var durakth = document.DurakAlani.elements[0].value;
+queryTask.executeForExtent({where:"FID="+durakth}).then(function(resultsm) { 
+
+view.goTo(resultsm) ; 
+
+ });
+ }
+ 
+});
+
+
+</script>
+ <script type="text/javascript">
+
+ 
+ </script>
+</head>
+<body>
+  <div id="yazı">Ulaşım Katmanını ; 
+  <br/><input type="button" class="butonum" id="br" value="GOSTERME"  /> 
+  <br/><input type="button" class="butonum"id="bm" size="2" value="GOSTER" /> 
+  <br/><input type="text" id="km" value="0.5" size="3" maxlength="3" /><input type="button" class="butonum" id="mk" value="saydam" /> </div>
+ 
+  <div id="buton3"> <input type="button" id="bd" value="tüm harita" /> </div>
+  <div id="tematik"> başakşehir otobüs durak noktaları </div>
+
+  
+<div id="melDiv"> </div> 
+<form name="DurakAlani" >
+<div id="listem">
+  Durak Seç:
+  <br/> <select name="DurakAd">
+ <option value="1"> Fatih Terim Stadyumu</option>
+ <option value="2"> Hisar Sitesi</option>
+ <option value="3"> Başakşehir 5.Etap</option>
+ <option value="4"> Yeşil Vadi </option>
+ <option value="5"> Başakşehir Metro</option>
+ <option value="6"> Başakşehir Polis Merkezi </option>
+ <option value="7"> Başakşehir 1.Etap </option>
+ <option value="8"> Onurkent </option>
+ <option value="9"> A1 Yolu </option>
+ <option value="10"> Kültür Evi </option>
+ <option value="11"> Fesleğen Sitesi</option>
+ <option value="12"> Bizimevler </option>
+ <option value="13"> Üniversiteliler Sitesi </option>
+ <option value="14"> Iski Tesisleri</option>
+ <option value="15"> Başakşehir 2.Etap </option>
+ <option value="16"> Başakşehir 1.Etap Camii </option>
+ <option value="17"> Başakşehir Bulvarı</option>
+ <option value="18"> Cahit Zarifoğlu I.Ö.O. </option>
+ <option value="19"> Başak Konutları </option>
+ <option value="20"> Başakşehir Yolu </option>
+ </select> <input type="button" class="butonum" id="bc" value="GİT" />
+</div>
+</form>
+</body>
+</html> 
